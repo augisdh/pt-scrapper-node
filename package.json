@@ -1,0 +1,16 @@
+{
+  "name": "poker-scrapper-node",
+  "version": "1.0.0",
+  "description": "poker scrapper node script",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "npm run unit"
+  },
+  "author": "augisdh <34551243+augisdh@users.noreply.github.com>",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "puppeteer": "^1.11.0"
+  }
+}
