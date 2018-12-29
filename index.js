@@ -6,15 +6,15 @@ const config = require('./config.json');
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-	res.send('App is running');
+  res.send('App is running');
 
-	let username = config.username;
-	let password = config.password;
-	let playerName = 'augustas789';
-	let pokerRoom = 'pokerstars';
-	let year = '2018';
-	let tournamentType = 'sng'
-	let url = `http://pokerprolabs.com/${playerName}/${pokerRoom}/${year}/${tournamentType}`;
+	const username = config.username;
+	const password = config.password;
+	const playerName = 'augustas789';
+	const pokerRoom = 'pokerstars';
+	const year = '2018';
+	const tournamentType = 'sng'
+	const url = `http://pokerprolabs.com/${playerName}/${pokerRoom}/${year}/${tournamentType}`;
 
 	scrapper.scrapeData(url, username, password);
 });
