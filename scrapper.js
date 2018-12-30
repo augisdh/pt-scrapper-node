@@ -7,6 +7,7 @@ const scrapeData = async (url, username, passowrd) => {
   const nameInput = '#UserName';
   const passInput = '#Password';
   const btnLogin = 'input[type="submit"]';
+  const allData = [];
 
 	await page.goto(url);
 
@@ -38,8 +39,6 @@ const scrapeData = async (url, username, passowrd) => {
   await waitToLoad();
 
   const extractData = async () => {
-    await page.screenshot({path: `test.png`, fullPage: true});
-
     const pageData = await page.evaluate(() => {
       const selector = document.querySelectorAll("tbody#body tr");
       const dataArr = Array.from(selector);
@@ -58,25 +57,47 @@ const scrapeData = async (url, username, passowrd) => {
       return dataArr;
     })
 
-    const dataJSON = JSON.stringify(pageData, null, 2);
-    fs.writeFile('data.json', dataJSON, (err) => {
-      (err) ? console.log(`Something wrong: ${err}`) : console.log('Everything works!');
-    })
+    await pushData(pageData)
 
-    // const nextPageIsDisabled = await page.evaluate(() => document.querySelector("#next").classList.contains("ui-state-disabled"));
+    const nextPageIsDisabled = await page.evaluate(() => document.querySelector("#next").classList.contains("ui-state-disabled"));
 
-    // if (!nextPageIsDisabled) {
-    //   await goToNextPage();
-    //   await extractData();
-    // } else {
-    //   console.log(`Extracting is done: ${nextPageIsDisabled}`);
-    // }
+    if (!nextPageIsDisabled) {
+      await goToNextPage();
+      await extractData();
+    } else {
+      const dataJSON = JSON.stringify(allData, null, 2);
+      fs.writeFile('data.json', dataJSON, (err) => {
+        (err) ? console.log(`Something wrong: ${err}`) : console.log('Everything works!');
+      });
+    }
   }
 
-  // const goToNextPage = async () => {
-  //   await page.click('#next');
-  //   await waitToLoad();
-  // }
+  const pushData = async (arr) => {
+    function checkValue (obj, key, value) {
+      return obj.hasOwnProperty(key) && obj[key] === value;
+    }
+
+    arr.forEach(game => {
+      if (allData.length !== 0) {
+        let hasValue = allData.some(item => {return checkValue(item, 'tournament', game.tournament)});
+
+        if (hasValue) {
+          let indexToPush = allData.findIndex(i => i.tournament === game.tournament);
+          allData[indexToPush]['list'].push(game);
+        } else {
+          allData[allData.length] = Object.assign({tournament: game.tournament, list: new Array(game)});
+        }
+
+      } else {
+        allData[0] = Object.assign({tournament: game.tournament, list: new Array(game)});
+      }
+    });
+  }
+
+  const goToNextPage = async () => {
+    await page.click('#next');
+    await waitToLoad();
+  }
 
   await extractData();
 
