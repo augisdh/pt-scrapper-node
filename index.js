@@ -1,22 +1,27 @@
 const app = require('express')();
-const http = require('http');
-const server = http.createServer(app);
-const scrapper = require('./scrapper');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const config = require('./config.json');
-const PORT = process.env.PORT || 3000;
+const scrapper = require('./scrapper');
+const http = require('http');
 
-app.get('/', (req, res) => {
-  res.send('App is running');
+app.use(cors());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+app.get('/', (req, res) => {res.send('App is running')});
+
+app.post('/api', (req, res) => {
+	const {playerName, pokerRoom, year, tournamentType} = req.body;
 
 	const username = config.username;
 	const password = config.password;
-	const playerName = 'augustas789';
-	const pokerRoom = 'pokerstars';
-	const year = '2018';
-	const tournamentType = 'sng'
 	const url = `http://pokerprolabs.com/${playerName}/${pokerRoom}/${year}/${tournamentType}`;
 
 	scrapper.scrapeData(url, username, password);
 });
+
+const server = http.createServer(app);
+const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => console.log(`App listening on port ${PORT}!`));

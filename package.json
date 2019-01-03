@@ -10,6 +10,8 @@
   "author": "augisdh <34551243+augisdh@users.noreply.github.com>",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
     "puppeteer": "^1.11.0"
   }

@@ -53,7 +53,6 @@ const scrapeData = async (url, username, passowrd) => {
         dataArr[i].buyin = dataBuyin[i];
         dataArr[i].prize = dataPrize[i];
       }
-
       return dataArr;
     })
 
@@ -80,14 +79,12 @@ const scrapeData = async (url, username, passowrd) => {
     arr.forEach(game => {
       if (allData.length !== 0) {
         let hasValue = allData.some(item => {return checkValue(item, 'tournament', game.tournament)});
-
         if (hasValue) {
           let indexToPush = allData.findIndex(i => i.tournament === game.tournament);
           allData[indexToPush]['list'].push(game);
         } else {
           allData[allData.length] = Object.assign({tournament: game.tournament, list: new Array(game)});
         }
-
       } else {
         allData[0] = Object.assign({tournament: game.tournament, list: new Array(game)});
       }
